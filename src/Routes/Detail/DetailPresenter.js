@@ -1,8 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Helmet from "react-helmet"
+import Helmet from "react-helmet";
 import Loader from "Components/Loader";
+import YouTube from "react-youtube";
+
+const opts={
+  height: '160px',
+  width: '240px'
+}
 
 const Container = styled.div`
   height: calc(100vh - 50px);
@@ -63,26 +69,38 @@ const Divider = styled.span`
 `;
 
 const Overview = styled.p`
-  font-size: 12px; 
-  opacity: 0.7; 
-  line-height: 1.5; 
-  width : 50%;
+  font-size: 12px;
+  opacity: 0.7;
+  line-height: 1.5;
+  width: 50%;
+  margin-bottom: 50px;
+`;
+
+const VideoUl = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 240px);
+  grid-gap: 10px;
+`;
+
+const VideoLi = styled.div`
+  margin-right: 10px;
 `;
 
 const DetailPresenter = ({ result, loading, error }) =>
   loading ? (
     <>
-    <Helmet>
-      <title>Loading | Nomflix</title>
-    </Helmet>
-    <Loader />
+      <Helmet>
+        <title>Loading | Nomflix</title>
+      </Helmet>
+      <Loader />
     </>
   ) : (
     <Container>
       <Helmet>
-        <title>{result.original_title
-              ? result.original_title
-              : result.original_name} | Nomflix</title>
+        <title>
+          {result.original_title ? result.original_title : result.original_name}{" "}
+          | Nomflix
+        </title>
       </Helmet>
       <Backdrop
         bgImage={`https://image.tmdb.org/t/p/original/${result.backdrop_path}`}
@@ -116,13 +134,24 @@ const DetailPresenter = ({ result, loading, error }) =>
             <Item>
               {result.genres &&
                 result.genres.map((genre, index) =>
-                  index === result.genres.length -1 ? genre.name : `${genre.name} / `
+                  index === result.genres.length - 1
+                    ? genre.name
+                    : `${genre.name} / `
                 )}
             </Item>
           </ItemContainer>
-          <Overview>
-            {result.overview}
-          </Overview>
+          <Overview>{result.overview}</Overview>
+          <VideoUl>
+            {result.videos &&
+              result.videos.results.map((li) => 
+                
+                  
+                  <VideoLi>
+                    <YouTube videoId={li.key} opts={opts} />
+                  </VideoLi>
+                
+              )}
+          </VideoUl>
         </Data>
       </Content>
     </Container>
